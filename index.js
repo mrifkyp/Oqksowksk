@@ -1,7 +1,18 @@
 const express = require('express');
 const axios = require('axios'); 
+const rateLimit = require('express-rate-limit'); // Import express-rate-limit
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Rate Limiting middleware
+const limiter = rateLimit({
+    windowMs: 5 * 60 * 1000, // 1 menit
+    max: 100, // Maksimum 100 permintaan per IP
+    message: { error: "Too many requests, please try again later." }
+});
+
+// Menggunakan middleware di semua rute
+app.use(limiter);
 
 app.get('/api/content', async (req, res) => { 
     const { url } = req.query;
